@@ -1,0 +1,180 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+	
+	static Array two_powers;
+	static boolean color;
+	
+    /** Initializes the Screen. */
+    function void init() {
+		var int i, b;
+		let two_powers = Array.new(16);
+		let i = 0;
+		let b = 1;
+		while(i < 16) {
+			let two_powers[i] = b;
+			let b = b + b;
+			let i = i + 1;
+		}
+		
+		let color = true;
+		return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+		
+		var int address;
+		let address = 16384;
+		while(address < 24576) {
+			do Memory.poke(address, 0);
+			let address = address + 1;
+		}
+		return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+		let color = b;
+		return;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+		
+		var int address, value, x_div_16;
+		let x_div_16 = x / 16;
+		let address = 16384 + (32 * y) + x_div_16;
+		let value = Memory.peek(address);
+		if(color) {
+			let value = value | two_powers[x - (x_div_16 * 16)];
+		}
+		else {
+			let value = value & (~two_powers[x - (x_div_16 * 16)]);
+		}
+		do Memory.poke(address, value);
+		return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+		
+		if(y1 = y2) {
+			do Screen.drawHorizontalLine(x1, x2, y1);
+			return;
+		}
+		if(x1 = x2) {
+			do Screen.drawVerticalLine(x1, y1, y2);
+			return;
+		}
+		
+		do Screen.drawDiagonal(x1, y1, x2, y2);
+		return;
+	}
+	
+	function void drawHorizontalLine(int x1, int x2, int y) {
+		
+		var int inc;
+		if(x1 < x2) {
+			let inc = 1;
+		}
+		else {
+			let inc = -1;
+		}
+		while(~(x1 = x2)) {
+			do Screen.drawPixel(x1, y);
+			let x1 = x1 + inc;
+		}
+		do Screen.drawPixel(x1, y);
+		return;
+	}
+	
+	function void drawVerticalLine(int x, int y1, int y2) {
+		
+		var int inc;
+		if(y1 < y2) {
+			let inc = 1;
+		}
+		else {
+			let inc = -1;
+		}
+		while(~(y1 = y2)) {
+			do Screen.drawPixel(x, y1);
+			let y1 = y1 + inc;
+		}
+		do Screen.drawPixel(x, y1);
+		return;
+	}
+
+	function void drawDiagonal(int x1, int y1, int x2, int y2) {
+		
+		var int dx, dy, a, b, diff, x, y, slope_sign;
+		
+		let dx = x2 - x1;
+		let dy = y2 - y1;
+		if(((dx > 0) & (dy > 0)) | ((dx < 0) & (dy < 0))) {
+			let slope_sign = 1;
+		}
+		else {
+			let slope_sign = -1;
+		}
+		
+		if(x1 > x2) {
+			let x = x2;
+			let y = y2;
+		}
+		else {
+			let x = x1;
+			let y = y1;
+		}
+		
+		let dx = Math.abs(dx);
+		let dy = Math.abs(dy);
+		let a = 0;
+		let b = 0;
+		let diff = 0;
+		while((~(a > dx)) & (~(b > dy))) {
+			do Screen.drawPixel(x + a, y + (b*slope_sign));
+			if(diff < 0) {let a = a + 1; let diff = diff + dy;}
+			else {let b = b + 1; let diff = diff - dx;}
+		}
+		return;
+	}
+	
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+		
+		var int y;
+		//let x = x1;
+		let y = y1;
+		while(~(y > y2)) {
+			do Screen.drawLine(x1, y, x2, y);
+			let y = y + 1;
+		}
+		return;
+	}
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+		
+		var int dy, x_offset;
+		let dy = -r;
+		while(~(dy > r)) {
+			let x_offset = Math.sqrt((r*r) - (dy*dy));
+			do Screen.drawLine(x -  x_offset, y + dy, x + x_offset, y + dy);
+			let dy = dy + 1;
+		}
+		return;
+	}
+}

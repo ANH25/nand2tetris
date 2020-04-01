@@ -1,0 +1,31 @@
+%language=ANSI-C
+%define lookup-function-name vm_get_cmd
+%define hash-function-name vm_cmd_hash
+%define constants-prefix VMCMD_
+%define initializer-suffix ,0,{NULL},{0},0,{{0}}
+%readonly-tables
+%enum
+%includes
+%{
+#include "hvm-defs.h"
+%}
+%struct-type
+struct vm_cmd;
+%%
+push, vm_cmd_push, {NULL}, {0}, 3, {{0}}
+pop, vm_cmd_pop, {NULL}, {0}, 3, {{0}}
+label, vm_cmd_label, {NULL}, {0}, 2, {{0}}
+add, vm_cmd_add, {NULL}, {0}, 1, {{0}}
+sub, vm_cmd_sub, {NULL}, {0}, 1, {{0}}
+neg, vm_cmd_neg, {NULL}, {0}, 1, {{0}}
+eq, vm_cmd_eq, {NULL}, {0}, 1, {{0}}
+gt, vm_cmd_gt, {NULL}, {0}, 1, {{0}}
+lt, vm_cmd_lt, {NULL}, {0}, 1, {{0}}
+and, vm_cmd_and, {NULL}, {0}, 1, {{0}}
+or, vm_cmd_or, {NULL}, {0}, 1, {{0}}
+not, vm_cmd_not, {NULL}, {0}, 1, {{0}}
+goto, vm_cmd_goto, {NULL}, {0}, 2, {{0}}
+if-goto, vm_cmd_ifgoto, {NULL}, {0}, 2, {{0}}
+call, vm_cmd_call, {NULL}, {0}, 3, {{0}}
+function, vm_cmd_function, {NULL}, {0}, 3, {{0}}
+return, vm_cmd_return, {NULL}, {0}, 1, {{0}}

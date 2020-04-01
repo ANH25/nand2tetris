@@ -1,0 +1,61 @@
+%language=ANSI-C
+%define lookup-function-name j_get_literal
+%define hash-function-name j_literal_hash
+%define constants-prefix JLTR_
+%define initializer-suffix ,0,{0}
+%readonly-tables
+%enum
+%includes
+%{
+#include "jack-token.h"
+%}
+%struct-type
+struct j_literal {
+	const char *name;
+	j_token_type type;
+	union {
+		j_keyword_type keyword_type;
+		j_symbol_type symbol_type;
+	};
+};
+%%
+class, j_keyword, {j_keyword_class}
+constructor, j_keyword, {j_keyword_constructor}
+function, j_keyword, {j_keyword_function}
+method, j_keyword, {j_keyword_method}
+field, j_keyword, {j_keyword_field}
+static, j_keyword, {j_keyword_static}
+var, j_keyword, {j_keyword_var}
+int, j_keyword, {j_keyword_int}
+char, j_keyword, {j_keyword_char}
+boolean, j_keyword, {j_keyword_boolean}
+void, j_keyword, {j_keyword_void}
+true, j_keyword, {j_keyword_true}
+false, j_keyword, {j_keyword_false}
+null, j_keyword, {j_keyword_null}
+this, j_keyword, {j_keyword_this}
+let, j_keyword, {j_keyword_let}
+do, j_keyword, {j_keyword_do}
+if, j_keyword, {j_keyword_if}
+else, j_keyword, {j_keyword_else}
+while, j_keyword, {j_keyword_while}
+return, j_keyword, {j_keyword_return}
+"{", j_symbol, {0}
+"}", j_symbol, {0}
+"(", j_symbol, {0}
+")", j_symbol, {0}
+"[", j_symbol, {0}
+"]", j_symbol, {0}
+".", j_symbol, {0}
+",", j_symbol, {0}
+";", j_symbol, {0}
+"+", j_symbol, {j_symbol_op}
+"-", j_symbol, {j_symbol_op}
+"*", j_symbol, {j_symbol_op}
+"/", j_symbol, {j_symbol_op}
+"&", j_symbol, {j_symbol_op}
+"|", j_symbol, {j_symbol_op}
+"<", j_symbol, {j_symbol_op}
+">", j_symbol, {j_symbol_op}
+"=", j_symbol, {j_symbol_op}
+"~", j_symbol, {0}

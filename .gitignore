@@ -1,0 +1,27 @@
+/build
+/00
+/06
+/07
+/08
+/09
+/10
+/11
+/13
+
+# only include .hdl files
+/01/*
+!/01/*.hdl
+/02/*
+!/02/*.hdl
+/03/*/*
+!/03/*/*.hdl
+/05/*
+!/05/*.hdl
+
+# include .asm files in Project 4
+/04/*/*
+!/04/*/*.asm
+
+# include Jack OS sources
+12/*
+!12/*.jack

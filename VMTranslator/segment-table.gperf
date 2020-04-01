@@ -1,0 +1,21 @@
+%language=ANSI-C
+%define lookup-function-name vm_get_segment
+%define hash-function-name vm_segment_hash
+%define constants-prefix VM_SEG_
+%define initializer-suffix ,NULL,NULL,{NULL}
+%enum
+%includes
+%{
+#include "hvm-defs.h"
+%}
+%struct-type
+struct vm_segment;
+%%
+constant, vm_segment_translate_push_constant, vm_segment_error_pop_constant, {NULL}
+local, vm_segment_translate_push_basic, vm_segment_translate_pop_basic, (struct vm_segment_extra) {"LCL"}
+argument, vm_segment_translate_push_basic, vm_segment_translate_pop_basic, (struct vm_segment_extra) {"ARG"}
+this, vm_segment_translate_push_basic, vm_segment_translate_pop_basic, (struct vm_segment_extra) {"THIS"}
+that, vm_segment_translate_push_basic, vm_segment_translate_pop_basic, (struct vm_segment_extra) {"THAT"}
+static, vm_segment_translate_push_static, vm_segment_translate_pop_static, {NULL}
+temp, vm_segment_translate_push_temp, vm_segment_translate_pop_temp, {NULL}
+pointer, vm_segment_translate_push_pointer, vm_segment_translate_pop_pointer, {NULL}
