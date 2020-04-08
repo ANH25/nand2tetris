@@ -14,10 +14,7 @@
 #include "n2t-common.h"
 #include "vector.h"
 
-/* fixme: by default, uthash aborts on oom conditions making our handling of that in this code a bit moot.
-   we can make it non-aborting, but since uthash is just a pile of fancy macros,
-   we can't have specific handling for each call of the HASH_ADD_* functions.
-*/
+#define HASH_NONFATAL_OOM 1
 #include "uthash.h"
 
 #include "predefined-symbols.h"
@@ -300,6 +297,15 @@ hasm_state hasm_assemble_n(struct hasm *hasm, uint16_t max_inst_count) {
 								goto CLEAN;
 							}
 							
+							#undef uthash_nonfatal_oom
+							#define uthash_nonfatal_oom(obj) do { \
+								n2t_free(symbol_str); \
+								n2t_free(usr_sym); \
+								hasm_func_error(hasm, "out of memory"); \
+								ret = hasm_oom; \
+								goto CLEAN; \
+							} while(0)
+							
 							HASH_ADD_KEYPTR( hh, user_symbols, symbol_str, symbol_len, usr_sym);
 						}
 						else {
@@ -395,6 +401,16 @@ hasm_state hasm_assemble_n(struct hasm *hasm, uint16_t max_inst_count) {
 			}
 			l->name = label;
 			l->address = hasm->inst_count;
+			
+			#undef uthash_nonfatal_oom
+			#define uthash_nonfatal_oom(obj) do { \
+				n2t_free(label); \
+				n2t_free(l); \
+				hasm_func_error(hasm, "out of memory"); \
+				ret = hasm_oom; \
+				goto CLEAN; \
+			} while(0)
+			
 			HASH_ADD_KEYPTR( hh, labels, label, label_len, l);
 		}
 		else {

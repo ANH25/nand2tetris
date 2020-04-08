@@ -1076,6 +1076,14 @@ int jc_compile_parameter_list(struct j_compiler *jc, j_keyword_type subroutine_t
 			return 0;
 		}
 		
+		#undef uthash_nonfatal_oom
+		#define uthash_nonfatal_oom(obj) do { \
+			n2t_free(symbol->type); \
+			n2t_free(symbol->name); \
+			n2t_free(symbol); \
+			jc_oom_report(jc); \
+			return 0; \
+		} while(0)
 		//fixme: check if symbol is already defined before adding it to table
 		HASH_ADD_STR(jc->subroutine_symbol_table, name, symbol);
 		
@@ -1173,7 +1181,17 @@ uint16_t jc_compile_var_dec(struct j_compiler *jc) {
 		symbol->index = jc->var_kind_indices[j_var_local];
 		jc->var_kind_indices[j_var_local]++;
 		
-		//printf("symbol->name = '%s'\n", symbol->name);
+		
+		#undef uthash_nonfatal_oom
+		#define uthash_nonfatal_oom(obj) do { \
+			n2t_free(symbol->type); \
+			n2t_free(symbol->name); \
+			n2t_free(symbol); \
+			jc_oom_report(jc); \
+			var_count = -1; \
+			goto CLEAN; \
+		} while(0)
+		
 		HASH_ADD_STR(jc->subroutine_symbol_table, name, symbol);
 		var_count++;
 		
@@ -1405,6 +1423,16 @@ int jc_compile_class_var_dec(struct j_compiler *jc) {
 		}
 		symbol->index = jc->var_kind_indices[var_kind];
 		jc->var_kind_indices[var_kind]++;
+		
+		#undef uthash_nonfatal_oom
+		#define uthash_nonfatal_oom(obj) do { \
+			n2t_free(symbol->type); \
+			n2t_free(symbol->name); \
+			n2t_free(symbol); \
+			jc_oom_report(jc); \
+			ret = 0; \
+			goto CLEAN; \
+		} while(0)
 		//fixme: check if symbol is already defined before adding it to table
 		HASH_ADD_STR(jc->class_symbol_table, name, symbol);
 		

@@ -2,6 +2,8 @@
 #define J_SYMBOL_TABLE_H
 
 #include <stdint.h>
+
+#define HASH_NONFATAL_OOM 1
 #include "uthash.h"
 
 typedef enum j_var_kind {
