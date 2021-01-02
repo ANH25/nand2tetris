@@ -169,13 +169,12 @@ static inline char* n2tstr_strcpy(n2tstr *nstr, const char *cstr) {
 	return n2tstr_strcpy_n(nstr, cstr, strlen(cstr) + 1);
 }
 
-/* strip everything except the file name from 'path' and append .'ext' to it and return
+/* strip everything except filename from 'path' and append .'ext' to it and return
    a new malloced string
 */
 char* n2t_make_filename_with_ext(const char *path, const char *ext);
 
 
-// todo: make dir state a member of n2t_dir_search
 typedef enum n2t_dir_state {
 	n2t_dir_success = 0,
 	n2t_dir_error,
@@ -194,7 +193,6 @@ struct n2t_dir_search {
 	WIN32_FIND_DATAA *file_handle;
 	size_t dir_len;
 	char *fpath;
-	//size_t fpath_len;
 	n2t_dir_state state;
 };
 

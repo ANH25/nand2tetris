@@ -7,7 +7,6 @@ in a two-pass translator. So I'll probably call it a day improving this version 
 and write a more advanced, yet more convenient one.
 */
 /* TODO
-- should I use the `inline` qualifier for code generation functions?
 - clean up the mess!
 - optimizations
 - push/pop operations can be optimized when the segment address offset is 0, or 1 in some cases (DONE)
@@ -15,7 +14,7 @@ and write a more advanced, yet more convenient one.
 - dead code elimination
 - make label generation compatible with the VM specification (See slides 8.) (DONE)
 - fancy error reporting for things like undefined functions, labels, etc. (?)
-  (probably not for functions, since we can functions in different files
+  (probably not for functions, since we can have functions in different files
    that call each another by calling vm_translate() multiple times)
 - labels in the VM language have function scope,
   so we can have multiple labels with the same names in different functions.

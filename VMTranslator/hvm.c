@@ -1,7 +1,6 @@
 /* Hack Virtual Machine Language Translator */
 
 /* TODO
-- should I use the `inline` qualifier for code generation functions?
 - peephole optimizations
 - error reporting for undefined labels (?)
 - different optimization options for code size and execution speed (?)
